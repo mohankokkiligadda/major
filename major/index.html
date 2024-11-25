@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rock Paper Scissors</title>
+    <link rel="stylesheet" href="paper.css" />
+  </head>
+  <body>
+    <div class="game-container">
+      <div class="scores">
+        <h1>ROCK<br />PAPER<br />SCISSORS</h1>
+        <div class="score-container">
+          <div class="score">
+            <h6>COMPUTER<br />SCORE</h6>
+            <p id="computer-score">0</p>
+          </div>
+          <div class="score">
+            <h6>YOUR<br />SCORE</h6>
+            <p id="player-score">0</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="img-container">
+        <div class="line line-1"></div>
+        <div class="line line-2"></div>
+        <div class="line line-3"></div>
+        <div class="img-1 img">
+          <img
+            src="../major/image/icons8-fist-67 1.png"
+            alt="Rock"
+            data-choice="rock"
+          />
+        </div>
+        <div class="img-2 img">
+          <img
+            src="../major/image/17911 1.png"
+            alt="Scissors"
+            data-choice="scissors"
+          />
+        </div>
+        <div class="img-3 img">
+          <img
+            src="../major/image/icons8-hand-64 1.png"
+            alt="Paper"
+            data-choice="paper"
+          />
+        </div>
+      </div>
+
+      <div class="overlay"></div>
+      <div class="card">
+        <button class="close-btn">X</button>
+        <h2>Game Rules</h2>
+        <ul>
+          <li>
+            Rock beats scissors, scissors beat paper, and paper beats rock.
+          </li>
+          <li>
+            Agree ahead of time whether you’ll count off “rock, paper, scissors,
+            shoot” or just “rock, paper, scissors.”
+          </li>
+          <li>
+            Use rock, paper, scissors to settle minor decisions or simply play
+            to pass the time.
+          </li>
+          <li>
+            If both players lay down the same hand, each player lays down
+            another hand.
+          </li>
+        </ul>
+      </div>
+      <div class="footer">
+        <button class="rules-btn">RULES</button>
+      </div>
+    </div>
+
+    <script>
+
+      const choices = document.querySelectorAll(".img-container img");
+      const choicesArray = ["rock", "paper", "scissors"];
+
+      function updateScores() {
+        const scores = JSON.parse(localStorage.getItem("scores")) || {
+          player: 0,
+          computer: 0,
+        };
+        document.getElementById("player-score").textContent = scores.player;
+        document.getElementById("computer-score").textContent = scores.computer;
+      }
+
+      updateScores();
+
+      choices.forEach((choice) => {
+        choice.addEventListener("click", () => {
+          const playerChoice = choice.dataset.choice;
+          const computerChoice = choicesArray[Math.floor(Math.random() * 3)];
+          let result;
+
+          if (playerChoice === computerChoice) {
+            result = "draw";
+          } else if (
+            (playerChoice === "rock" && computerChoice === "scissors") ||
+            (playerChoice === "scissors" && computerChoice === "paper") ||
+            (playerChoice === "paper" && computerChoice === "rock")
+          ) {
+            result = "win";
+          } else {
+            result = "lose";
+          }
+
+          const scores = JSON.parse(localStorage.getItem("scores")) || {
+            player: 0,
+            computer: 0,
+          };
+          if (result === "win") scores.player++;
+          else if (result === "lose") scores.computer++;
+
+          localStorage.setItem("scores", JSON.stringify(scores));
+          localStorage.setItem(
+            "lastResult",
+            JSON.stringify({ playerChoice, computerChoice, result })
+          );
+
+          window.location.href = "result.html";
+        });
+      });
+
+      const rulesBtn = document.querySelector(".rules-btn");
+      const closeBtn = document.querySelector(".close-btn");
+      const overlay = document.querySelector(".overlay");
+      const card = document.querySelector(".card");
+
+      rulesBtn.addEventListener("click", () => {
+        overlay.style.display = "block";
+        card.style.display = "block";
+      });
+
+      closeBtn.addEventListener("click", () => {
+        overlay.style.display = "none";
+        card.style.display = "none";
+      });
+
+      overlay.addEventListener("click", () => {
+        overlay.style.display = "none";
+        card.style.display = "none";
+      });
+    </script>
+  </body>
+</html>
